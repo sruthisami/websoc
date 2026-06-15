@@ -1,0 +1,24 @@
+{
+  "name": "websoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sruthisami/websoc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/sruthisami/websoc/issues"
+  },
+  "homepage": "https://github.com/sruthisami/websoc#readme",
+  "dependencies": {
+    "ws": "^8.21.0"
+  }
+}

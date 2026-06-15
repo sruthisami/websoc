@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>websocket server</h1>
+    <script>
+        //short fors destructuring instead of window.location.port=port
+        const {port}=window.location;
+        //connection is the live socket
+        const connection=new WebSocket(`ws://localhost:${port}`)
+        //i want a web socket connection to ws://localhost:9000
+    </script>
+</body>
+</html>
