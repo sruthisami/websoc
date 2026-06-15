@@ -1,18 +1,48 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>websocket server</h1>
+    <div>
+      <input type="text" placeholder="enter msg" id="msg-input" />
+      <button id="msg-send-btn">send</button>
+      <ul id="messages-container"></ul>
+    </div>
     <script>
-        //short fors destructuring instead of window.location.port=port
-        const {port}=window.location;
-        //connection is the live socket
-        const connection=new WebSocket(`ws://localhost:${port}`)
-        //i want a web socket connection to ws://localhost:9000
+      //dom
+
+      const msgInput = document.getElementById("msg-input");
+      const msgSendBtn = document.getElementById("msg-send-btn");
+      const msgcontainer = document.getElementById("messages-container");
+
+      //short fors destructuring instead of window.location.port=port
+      const { port } = window.location;
+      //connection is the live socket
+      const connection = new WebSocket(`ws://localhost:${port}`);
+      //i want a web socket connection to ws://localhost:9000
+
+      connection.onmessage = (msg) => {
+        const parsedData = JSON.parse(msg.data);
+
+        const li = document.createElement("li");
+        li.innerText = parsedData.message;
+
+        msgcontainer.appendChild(li);
+      };
+
+      connection.onopen = () => {
+        msgSendBtn.addEventListener("click", () => {
+          connection.send(
+            JSON.stringify({
+              message: msgInput.value,
+            }),
+          );
+        });
+      };
     </script>
-</body>
+  </body>
 </html>

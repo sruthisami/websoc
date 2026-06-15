@@ -1,11 +1,16 @@
 import http from "node:http"
-import fs from "node:fs"
+import fs from "node:fs/promises"
 import path from "path"
 import {WebSocketServer } from 'ws'
 
-const PORT =process.env.PORT ??9000
-const httpServer = http.createServer(async (req, res) =>{
-    const indexFile = fs.readFileSync(path.resolve('./index.html'), 'utf-8')
+const PORT = process.env.PORT ?? 9000
+
+//fs.readFileSync() is synchronous and blocking, meaning Node.js stops processing other requests until the file is fully read, which can hurt performance when many users access the server simultaneously. In contrast, await fs.readFile() from node:fs/promises is asynchronous and non-blocking, allowing Node.js to continue handling other requests while the file is being read, resulting in better scalability and throughput. For serving a static file like index.html, the most efficient approach is usually to read the file once when the server starts and reuse the cached content for every request.
+
+const indexFile = await fs.readFile(path.resolve('./index.html'), 'utf-8')
+
+const httpServer = http.createServer((req, res) =>{
+    // const indexFile = await fs.readFile(path.resolve('./index.html'), 'utf-8')
     res.setHeader('Content-Type', 'text/html')
     return res.end(indexFile)
 }) 
@@ -13,11 +18,19 @@ const httpServer = http.createServer(async (req, res) =>{
 //Attaches WebSocket server to the same HTTP server.
 const wsServer = new WebSocketServer({server:httpServer})
 
+
+//associating a handler for that connection
 wsServer.on('connection', (websocket) => {
     console.log(`Websocket connection..`)
+    //this is send to only to that client that sends the msg
     websocket.on('message', (data) => {
-        console.log("websocket message received")
+        //     console.log("websocket message received", data.toString()) 
+        // this broadcasts to all clients
+        wsServer.clients.forEach((client) => {
+            client.send(data.toString())
+        })
     })
+    
 });
 
 httpServer.listen(PORT, () => {
